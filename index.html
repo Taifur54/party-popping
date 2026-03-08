@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Party Popping 🎈</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pacifico&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink:    #FF3D8B;
+      --purple:  #8B2FC9;
+      --gold:    #FFD700;
+      --teal:    #00D4B4;
+      --coral:   #FF6B47;
+      --navy:    #0D0D2B;
+      --cream:   #FFF9F0;
+      --white:   #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ctext y='24' font-size='24'%3E🎈%3C/text%3E%3C/svg%3E") 8 8, auto;
+    }
+
+    /* ── BALLOON CANVAS ── */
+    #balloonCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── FLOATING BALLOONS (background deco) ── */
+    .balloon-deco {
+      position: absolute;
+      font-size: 2.5rem;
+      animation: floatUp linear infinite;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0.18;
+      z-index: 0;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(-8deg); opacity: 0.18; }
+      50%  { transform: translateY(-40px) rotate(8deg); opacity: 0.22; }
+      100% { transform: translateY(0) rotate(-8deg); opacity: 0.18; }
+    }
+
+    /* ── CLICKABLE BALLOONS ── */
+    .pop-balloon {
+      position: fixed;
+      font-size: 2.8rem;
+      cursor: pointer;
+      z-index: 500;
+      animation: bobble 3s ease-in-out infinite;
+      transition: transform 0.1s;
+      user-select: none;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    }
+    .pop-balloon:hover { transform: scale(1.2); }
+    .pop-balloon:active { transform: scale(0.8); }
+    @keyframes bobble {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50%       { transform: translateY(-18px) rotate(5deg); }
+    }
+
+    /* pop burst */
+    .pop-burst {
+      position: fixed;
+      pointer-events: none;
+      font-size: 2rem;
+      z-index: 9998;
+      animation: burstOut 0.7s ease-out forwards;
+    }
+    @keyframes burstOut {
+      0%   { transform: scale(0) rotate(0deg); opacity: 1; }
+      60%  { transform: scale(1.6) rotate(180deg); opacity: 1; }
+      100% { transform: scale(2.2) rotate(360deg); opacity: 0; }
+    }
+
+    /* confetti piece */
+    .confetti-piece {
+      position: fixed;
+      width: 8px; height: 8px;
+      border-radius: 2px;
+      pointer-events: none;
+      z-index: 9997;
+      animation: confettiFall 1.2s ease-out forwards;
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translateY(160px) rotate(720deg) scale(0.3); opacity: 0; }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(13,13,43,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,61,139,0.2);
+    }
+    .nav-logo {
+      font-family: 'Pacifico', cursive;
+      font-size: 1.6rem;
+      background: linear-gradient(90deg, var(--pink), var(--gold), var(--teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 32px;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-book {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff !important;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 20px rgba(255,61,139,0.4);
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    .nav-book:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,61,139,0.55) !important; color: #fff !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 120px 24px 80px;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(139,47,201,0.35) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 30%, rgba(255,61,139,0.3) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 80%, rgba(0,212,180,0.2) 0%, transparent 50%),
+        var(--navy);
+    }
+
+    /* confetti dots bg */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,61,139,0.1) 1px, transparent 1px);
+      background-size: 40px 40px, 70px 70px;
+      background-position: 0 0, 20px 20px;
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 860px; }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,215,0,0.12);
+      border: 1px solid rgba(255,215,0,0.35);
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border-radius: 50px;
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 14vw, 11rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+    .hero h1 .line1 {
+      background: linear-gradient(90deg, var(--pink) 0%, var(--gold) 50%, var(--teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+    .hero h1 .line2 {
+      background: linear-gradient(90deg, var(--teal) 0%, var(--purple) 50%, var(--pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 24px auto 44px;
+      font-weight: 300;
+    }
+    .hero-sub strong { color: var(--gold); font-weight: 700; }
+
+    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-glow {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      padding: 16px 40px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      box-shadow: 0 6px 30px rgba(255,61,139,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-block;
+    }
+    .btn-glow:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,61,139,0.6); }
+
+    .btn-outline-gold {
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      padding: 15px 36px;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+      display: inline-block;
+    }
+    .btn-outline-gold:hover { background: var(--gold); color: var(--navy); }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.35);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      animation: scrollBounce 2s ease-in-out infinite;
+    }
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      background: linear-gradient(90deg, var(--pink), var(--purple), var(--teal), var(--coral), var(--pink));
+      background-size: 300% 100%;
+      animation: gradientShift 6s linear infinite;
+      padding: 14px 0;
+      overflow: hidden;
+    }
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marqueeScroll 22s linear infinite;
+    }
+    .marquee-track span {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 24px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+    .marquee-track span::after { content: '🎉'; font-size: 0.9rem; }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── SECTIONS ── */
+    section { position: relative; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+    .section-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,215,0,0.1);
+      border: 1px solid rgba(255,215,0,0.3);
+      color: var(--gold);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 50px;
+      margin-bottom: 18px;
+    }
+
+    h2.big-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1;
+      letter-spacing: 0.04em;
+      margin-bottom: 20px;
+    }
+
+    /* ── ABOUT / VIBES ── */
+    .vibes-section {
+      padding: 100px 0;
+      background:
+        radial-gradient(ellipse at 90% 10%, rgba(255,61,139,0.15) 0%, transparent 50%),
+        var(--navy);
+    }
+    .vibes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .vibes-text p {
+      color: rgba(255,255,255,0.65);
+      line-height: 1.8;
+      font-size: 0.95rem;
+      font-weight: 300;
+      margin-bottom: 18px;
+    }
+    .vibes-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 36px;
+    }
+    .stat-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .stat-box:hover { border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.05); }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      background: linear-gradient(135deg, var(--gold), var(--coral));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+    .stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+
+    .vibes-img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .vibes-img-grid img {
+      width: 100%; border-radius: 16px; object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .vibes-img-grid img:hover { transform: scale(1.03); }
+    .vibes-img-grid img:first-child { grid-column: span 2; height: 260px; }
+    .vibes-img-grid img:not(:first-child) { height: 180px; }
+
+    /* ── SERVICES ── */
+    .services-section {
+      padding: 100px 0;
+      background:
+        radial-gradient(ellipse at 10% 80%, rgba(139,47,201,0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 90% 20%, rgba(0,212,180,0.15) 0%, transparent 50%),
+        #0A0A24;
+    }
+    .services-header { text-align: center; margin-bottom: 64px; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .service-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 40px 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--c1), var(--c2));
+      opacity: 0;
+      transition: opacity 0.3s;
+      border-radius: 20px;
+    }
+    .service-card:hover { transform: translateY(-8px); border-color: transparent; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+    .service-card:hover::before { opacity: 0.12; }
+
+    .service-card:nth-child(1) { --c1: #FF3D8B; --c2: #FF6B47; }
+    .service-card:nth-child(2) { --c1: #8B2FC9; --c2: #FF3D8B; }
+    .service-card:nth-child(3) { --c1: #00D4B4; --c2: #8B2FC9; }
+    .service-card:nth-child(4) { --c1: #FFD700; --c2: #FF6B47; }
+    .service-card:nth-child(5) { --c1: #FF6B47; --c2: #00D4B4; }
+    .service-card:nth-child(6) { --c1: #FF3D8B; --c2: #8B2FC9; }
+
+    .service-emoji { font-size: 3rem; margin-bottom: 18px; display: block; }
+    .service-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      margin-bottom: 12px;
+      position: relative; z-index: 1;
+    }
+    .service-card p { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.65; position: relative; z-index: 1; }
+    .service-badge {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 5px 14px;
+      background: rgba(255,215,0,0.12);
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 50px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      position: relative; z-index: 1;
+    }
+
+    /* ── GALLERY ── */
+    .gallery-section { padding: 100px 0; background: var(--navy); }
+    .gallery-header { text-align: center; margin-bottom: 56px; }
+    .gallery-mosaic {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 200px 200px;
+      gap: 12px;
+    }
+    .gallery-item { border-radius: 14px; overflow: hidden; position: relative; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .gallery-item:hover img { transform: scale(1.08); }
+    .gallery-item.tall { grid-row: span 2; }
+    .gallery-item.wide { grid-column: span 2; }
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(13,13,43,0.85));
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-overlay span { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
+
+    /* ── UPCOMING ── */
+    .upcoming-section {
+      padding: 100px 0;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,61,139,0.2) 0%, transparent 60%),
+        #0A0A24;
+    }
+    .upcoming-header { text-align: center; margin-bottom: 56px; }
+    .events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .event-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .event-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .event-img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .event-date-bar {
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      padding: 8px 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .event-body { padding: 24px 22px 28px; }
+    .event-body h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 8px; }
+    .event-body p { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 18px; }
+    .event-rsvp {
+      display: inline-block;
+      background: rgba(255,215,0,0.1);
+      border: 1px solid rgba(255,215,0,0.35);
+      color: var(--gold);
+      padding: 8px 22px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .event-rsvp:hover { background: var(--gold); color: var(--navy); }
+
+    /* ── COLLABS ── */
+    .collabs-section { padding: 80px 0; background: var(--navy); }
+    .collabs-header { text-align: center; margin-bottom: 48px; }
+    .collabs-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .collab-chip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      padding: 14px 24px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+    .collab-chip:hover { border-color: rgba(255,215,0,0.45); background: rgba(255,215,0,0.06); transform: translateY(-3px); }
+    .collab-icon { font-size: 1.5rem; }
+    .collab-name { font-size: 0.82rem; font-weight: 700; color: rgba(255,255,255,0.8); }
+    .collab-type { font-size: 0.65rem; color: rgba(255,255,255,0.35); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ── BOOKING ── */
+    .booking-section {
+      padding: 100px 0;
+      background:
+        radial-gradient(ellipse at 30% 50%, rgba(139,47,201,0.3) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 50%, rgba(255,61,139,0.25) 0%, transparent 55%),
+        #0A0A24;
+      text-align: center;
+    }
+    .booking-section h2 { margin-bottom: 14px; }
+    .booking-section > .container > p { color: rgba(255,255,255,0.6); font-size: 0.95rem; font-weight: 300; max-width: 500px; margin: 0 auto 52px; line-height: 1.7; }
+
+    .booking-form {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 48px 48px;
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .form-group label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: rgba(255,61,139,0.5); background: rgba(255,61,139,0.05); }
+    .form-group select option { background: #1a1a3e; color: #fff; }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+
+    .form-submit {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 6px 30px rgba(255,61,139,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(255,61,139,0.6); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #060614;
+      padding: 60px 0 32px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 48px;
+    }
+    .footer-brand p { font-size: 0.82rem; color: rgba(255,255,255,0.35); line-height: 1.75; max-width: 280px; margin-top: 16px; }
+    .footer-col h4 { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; font-weight: 700; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a { font-size: 0.8rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--pink); }
+    .footer-socials { display: flex; gap: 12px; margin-top: 20px; }
+    .social-pill {
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+      transition: all 0.2s;
+    }
+    .social-pill:hover { border-color: var(--pink); color: var(--pink); }
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 40px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .vibes-grid, .services-grid, .events-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .gallery-item.tall, .gallery-item.wide { grid-column: span 1; grid-row: span 1; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 580px) {
+      .hero h1 { font-size: 4.5rem; }
+      .container { padding: 0 20px; }
+      .vibes-grid, .services-grid, .events-grid, .gallery-mosaic { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .booking-form { padding: 32px 24px; }
+      .collabs-row { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CLICK-TO-POP BALLOONS -->
+<div class="pop-balloon" style="bottom:12%; left:3%;"  onclick="popBalloon(this, event)" title="Click me!">🎈</div>
+<div class="pop-balloon" style="bottom:25%; right:4%; animation-delay:1s;" onclick="popBalloon(this, event)" title="Click me!">🎀</div>
+<div class="pop-balloon" style="top:35%;  left:1%;  animation-delay:2s;" onclick="popBalloon(this, event)" title="Click me!">🎊</div>
+<div class="pop-balloon" style="top:60%;  right:2%; animation-delay:0.5s;" onclick="popBalloon(this, event)" title="Click me!">🎈</div>
+<div class="pop-balloon" style="bottom:45%; left:2%; animation-delay:1.5s;" onclick="popBalloon(this, event)" title="Click me!">🎉</div>
+<div class="pop-balloon" style="top:20%;  right:1%; animation-delay:2.5s;" onclick="popBalloon(this, event)" title="Click me!">🎈</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Party Popping 🎈</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#events">Upcoming</a></li>
+    <li><a href="#collabs">Collabs</a></li>
+    <li><a href="#book" class="nav-book">Book Now 🎉</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <!-- deco balloons -->
+  <div class="balloon-deco" style="top:15%; left:8%;  animation-duration:5s;">🎈</div>
+  <div class="balloon-deco" style="top:25%; right:10%; animation-duration:6s; animation-delay:1s;">🎀</div>
+  <div class="balloon-deco" style="top:60%; left:5%;  animation-duration:7s; animation-delay:2s;">🎊</div>
+  <div class="balloon-deco" style="top:70%; right:8%; animation-duration:5.5s; animation-delay:0.5s;">🎉</div>
+  <div class="balloon-deco" style="top:40%; left:15%; animation-duration:8s; animation-delay:1.5s; font-size:1.8rem;">🎈</div>
+
+  <div class="hero-content">
+    <div class="hero-tag">✦ Schererville's Most Popping Event Planner</div>
+    <h1>
+      <span class="line1">Party</span>
+      <span class="line2">Popping</span>
+    </h1>
+    <p class="hero-sub">From <strong>last-minute pop-ups</strong> to <strong>luxury affairs</strong> — we make your celebration unforgettable. Book today and let's make your party POP! 🎊</p>
+    <div class="hero-btns">
+      <a href="#book" class="btn-glow">Book Your Party 🎈</a>
+      <a href="#gallery" class="btn-outline-gold">See Our Work ✨</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <span style="font-size:1.2rem;">↓</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Birthday Parties</span>
+    <span>Baby Showers</span>
+    <span>Pop-Up Events</span>
+    <span>Luxury Affairs</span>
+    <span>Same-Week Bookings</span>
+    <span>Corporate Events</span>
+    <span>Balloon Décor</span>
+    <span>Custom Themes</span>
+    <span>Birthday Parties</span>
+    <span>Baby Showers</span>
+    <span>Pop-Up Events</span>
+    <span>Luxury Affairs</span>
+    <span>Same-Week Bookings</span>
+    <span>Corporate Events</span>
+    <span>Balloon Décor</span>
+    <span>Custom Themes</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="vibes-section" id="about">
+  <div class="container">
+    <div class="vibes-grid">
+      <div class="vibes-text">
+        <div class="section-chip">✦ The Vibe</div>
+        <h2 class="big-title" style="background:linear-gradient(90deg,#FF3D8B,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">We Do Both Worlds.</h2>
+        <p>Whether you need a last-minute pop-up that goes viral or an elegant luxury event that drops jaws — <strong style="color:#fff;">Party Popping</strong> does it all with style, speed, and serious energy.</p>
+        <p>No event is too big, too small, or too spontaneous. We specialize in making magic happen fast — because life is too short to wait on a party.</p>
+        <div class="vibes-stats">
+          <div class="stat-box">
+            <span class="stat-num">50+</span>
+            <span class="stat-label">Events Done</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num">48h</span>
+            <span class="stat-label">Fastest Turnaround</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">Smiles Guaranteed</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num">2</span>
+            <span class="stat-label">Vibes: Lit & Luxury</span>
+          </div>
+        </div>
+      </div>
+      <div class="vibes-img-grid">
+        <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&q=80" alt="Party event"/>
+        <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&q=80" alt="Balloon decor"/>
+        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80" alt="Luxury party"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="container">
+    <div class="services-header">
+      <div class="section-chip">✦ What We Do</div>
+      <h2 class="big-title" style="background:linear-gradient(90deg,#00D4B4,#8B2FC9,#FF3D8B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Services</h2>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="service-emoji">🎂</span>
+        <h3>Birthday Parties</h3>
+        <p>From intimate gatherings to full-blown bashes — every birthday deserves to be legendary.</p>
+        <span class="service-badge">Most Popular</span>
+      </div>
+      <div class="service-card">
+        <span class="service-emoji">🎊</span>
+        <h3>Pop-Up Events</h3>
+        <p>Last-minute? No problem. We specialize in making surprise parties happen — fast.</p>
+        <span class="service-badge">Our Specialty</span>
+      </div>
+      <div class="service-card">
+        <span class="service-emoji">👶</span>
+        <h3>Baby Showers</h3>
+        <p>Sweet, stylish, and full of love. We create the perfect vibe for welcoming new life.</p>
+        <span class="service-badge">Fan Favorite</span>
+      </div>
+      <div class="service-card">
+        <span class="service-emoji">💎</span>
+        <h3>Luxury Affairs</h3>
+        <p>High-end events that feel like a dream. Elegant setups, premium décor, unforgettable moments.</p>
+        <span class="service-badge">Premium</span>
+      </div>
+      <div class="service-card">
+        <span class="service-emoji">🏢</span>
+        <h3>Corporate Events</h3>
+        <p>Make your next company event actually fun. Team celebrations, launches, milestones — we've got it.</p>
+        <span class="service-badge">Available</span>
+      </div>
+      <div class="service-card">
+        <span class="service-emoji">🎈</span>
+        <h3>Custom Themes</h3>
+        <p>Have a wild vision? We'll bring it to life. Completely custom themes built around your personality.</p>
+        <span class="service-badge">Fully Custom</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="container">
+    <div class="gallery-header">
+      <div class="section-chip">✦ Our Work</div>
+      <h2 class="big-title" style="background:linear-gradient(90deg,#FFD700,#FF3D8B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">The Portfolio</h2>
+    </div>
+    <div class="gallery-mosaic">
+      <div class="gallery-item tall">
+        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80" alt="Event 1"/>
+        <div class="gallery-overlay"><span>Birthday Bash 🎂</span></div>
+      </div>
+      <div class="gallery-item wide">
+        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=900&q=80" alt="Event 2"/>
+        <div class="gallery-overlay"><span>Luxury Setup 💎</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&q=80" alt="Event 3"/>
+        <div class="gallery-overlay"><span>Balloon Décor 🎈</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=500&q=80" alt="Event 4"/>
+        <div class="gallery-overlay"><span>Baby Shower 👶</span></div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=500&q=80" alt="Event 5"/>
+        <div class="gallery-overlay"><span>Pop-Up Party 🎊</span></div>
+      </div>
+      <div class="gallery-item wide">
+        <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=900&q=80" alt="Event 6"/>
+        <div class="gallery-overlay"><span>Night Event ✨</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UPCOMING EVENTS -->
+<section class="upcoming-section" id="events">
+  <div class="container">
+    <div class="upcoming-header">
+      <div class="section-chip">✦ What's Popping</div>
+      <h2 class="big-title" style="background:linear-gradient(90deg,#FF3D8B,#00D4B4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Upcoming Events</h2>
+    </div>
+    <div class="events-grid">
+      <div class="event-card">
+        <img class="event-img" src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80" alt="Pop-up party"/>
+        <div class="event-date-bar"><span>📅 Coming Soon</span><span>🎈 Pop-Up</span></div>
+        <div class="event-body">
+          <h3>Summer Pop-Up Bash</h3>
+          <p>An unexpected outdoor pop-up celebration with live music, balloon walls, and good energy only. Location drops 24hrs before.</p>
+          <a href="#book" class="event-rsvp">Get Notified 🔔</a>
+        </div>
+      </div>
+      <div class="event-card">
+        <img class="event-img" src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&q=80" alt="Luxury event"/>
+        <div class="event-date-bar"><span>📅 Coming Soon</span><span>💎 Luxury</span></div>
+        <div class="event-body">
+          <h3>Black & Gold Gala</h3>
+          <p>An elegant evening affair. Premium décor, champagne tower, and a vibe that screams luxury from start to finish.</p>
+          <a href="#book" class="event-rsvp">RSVP Now 🥂</a>
+        </div>
+      </div>
+      <div class="event-card">
+        <img class="event-img" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80" alt="Baby shower"/>
+        <div class="event-date-bar"><span>📅 Coming Soon</span><span>👶 Shower</span></div>
+        <div class="event-body">
+          <h3>Community Baby Shower</h3>
+          <p>A free community baby shower for expecting moms. Gifts, food, and all the love in the world. Stay tuned for details.</p>
+          <a href="#book" class="event-rsvp">Learn More 💕</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLABS -->
+<section class="collabs-section" id="collabs">
+  <div class="container">
+    <div class="collabs-header">
+      <div class="section-chip">✦ The Squad</div>
+      <h2 class="big-title" style="background:linear-gradient(90deg,#8B2FC9,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Collaborators</h2>
+    </div>
+    <div class="collabs-row">
+      <a href="#" class="collab-chip">
+        <span class="collab-icon">📸</span>
+        <div><div class="collab-name">Your Photographer</div><div class="collab-type">Photography</div></div>
+      </a>
+      <a href="#" class="collab-chip">
+        <span class="collab-icon">🎨</span>
+        <div><div class="collab-name">Your Designer</div><div class="collab-type">Web Design</div></div>
+      </a>
+      <a href="#" class="collab-chip">
+        <span class="collab-icon">🎵</span>
+        <div><div class="collab-name">DJ / Music</div><div class="collab-type">Entertainment</div></div>
+      </a>
+      <a href="#" class="collab-chip">
+        <span class="collab-icon">🎂</span>
+        <div><div class="collab-name">Cake Vendor</div><div class="collab-type">Catering</div></div>
+      </a>
+      <a href="#" class="collab-chip">
+        <span class="collab-icon">🌸</span>
+        <div><div class="collab-name">Florist</div><div class="collab-type">Floral Design</div></div>
+      </a>
+      <a href="#" class="collab-chip">
+        <span class="collab-icon">🎭</span>
+        <div><div class="collab-name">Entertainment Co.</div><div class="collab-type">Events</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section class="booking-section" id="book">
+  <div class="container">
+    <div class="section-chip" style="margin:0 auto 18px;">✦ Let's Party</div>
+    <h2 class="big-title" style="background:linear-gradient(90deg,#FF3D8B,#FFD700,#00D4B4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Book Your Event</h2>
+    <p>Fill out the form below and we'll get back to you ASAP — usually within a few hours. Last-minute requests welcome! 🎉</p>
+    <div class="booking-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" placeholder="e.g. Jasmine Carter"/>
+        </div>
+        <div class="form-group">
+          <label>Phone / Instagram</label>
+          <input type="text" placeholder="@yourhandle or 555-0000"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Event Type</label>
+          <select>
+            <option value="">Select an event type</option>
+            <option>Birthday Party</option>
+            <option>Pop-Up Event</option>
+            <option>Baby Shower</option>
+            <option>Luxury Affair</option>
+            <option>Corporate Event</option>
+            <option>Custom Theme</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estimated Date</label>
+          <input type="date"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Guest Count</label>
+          <input type="text" placeholder="e.g. 30–50 people"/>
+        </div>
+        <div class="form-group">
+          <label>Budget Range</label>
+          <select>
+            <option value="">Select a range</option>
+            <option>Under $500</option>
+            <option>$500 – $1,000</option>
+            <option>$1,000 – $2,500</option>
+            <option>$2,500 – $5,000</option>
+            <option>$5,000+</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Tell Me About Your Vision 🎈</label>
+        <textarea placeholder="Describe the vibe, theme, any special requests, or just say 'surprise me!'"></textarea>
+      </div>
+      <button class="form-submit" onclick="handleSubmit(event)">Send It! Let's Get This Party Started 🎉</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo" style="font-size:1.4rem;">Party Popping 🎈</a>
+      <p>From last-minute pop-ups to luxury galas — we make every celebration unforgettable.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-pill">📸 Instagram</a>
+        <a href="#" class="social-pill">🎵 TikTok</a>
+        <a href="#" class="social-pill">💬 DM Us</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Birthday Parties</a></li>
+        <li><a href="#services">Pop-Up Events</a></li>
+        <li><a href="#services">Baby Showers</a></li>
+        <li><a href="#services">Luxury Affairs</a></li>
+        <li><a href="#services">Corporate Events</a></li>
+        <li><a href="#services">Custom Themes</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#events">Upcoming Events</a></li>
+        <li><a href="#collabs">Collaborators</a></li>
+        <li><a href="#book">Book Now</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Party Popping. All rights reserved. 🎈</span>
+    <span>Made with love & confetti ✨</span>
+  </div>
+</footer>
+
+<script>
+  // ── POP BALLOON on click ──
+  const CONFETTI_COLORS = ['#FF3D8B','#FFD700','#00D4B4','#8B2FC9','#FF6B47','#fff','#FF9ECD'];
+
+  function popBalloon(el, e) {
+    const x = e.clientX, y = e.clientY;
+    // burst emoji
+    const burst = document.createElement('div');
+    burst.className = 'pop-burst';
+    burst.textContent = '💥';
+    burst.style.left = (x - 20) + 'px';
+    burst.style.top  = (y - 20) + 'px';
+    document.body.appendChild(burst);
+    setTimeout(() => burst.remove(), 750);
+
+    // confetti
+    for (let i = 0; i < 18; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = (x + (Math.random()-0.5)*40) + 'px';
+      c.style.top  = y + 'px';
+      c.style.background = CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)];
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.transform = `rotate(${Math.random()*360}deg)`;
+      c.style.animationDuration = (0.8 + Math.random()*0.6) + 's';
+      c.style.animationDelay = (Math.random()*0.15) + 's';
+      const tx = (Math.random()-0.5)*120;
+      c.style.setProperty('--tx', tx + 'px');
+      c.style.animation = `confettiFall ${0.9+Math.random()*0.5}s ease-out ${Math.random()*0.1}s forwards`;
+      c.style.marginLeft = ((Math.random()-0.5)*80) + 'px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 1400);
+    }
+
+    // hide & respawn balloon
+    el.style.opacity = '0';
+    el.style.pointerEvents = 'none';
+    setTimeout(() => {
+      el.style.opacity = '1';
+      el.style.pointerEvents = 'auto';
+    }, 2200);
+  }
+
+  // ── FORM SUBMIT ──
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target;
+    btn.textContent = '🎉 Sent! We\'ll be in touch soon!';
+    btn.style.background = 'linear-gradient(135deg, #00D4B4, #8B2FC9)';
+    btn.disabled = true;
+    // shoot confetti from button
+    const rect = btn.getBoundingClientRect();
+    for (let i = 0; i < 30; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = (rect.left + Math.random()*rect.width) + 'px';
+      c.style.top  = rect.top + 'px';
+      c.style.background = CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)];
+      c.style.width = c.style.height = (6 + Math.random()*8) + 'px';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.animationDuration = (0.9 + Math.random()*0.8) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 1800);
+    }
+  }
+
+  // ── CLICK ANYWHERE to pop a random mini confetti burst ──
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('pop-balloon') || e.target.classList.contains('form-submit')) return;
+    if (Math.random() > 0.4) return; // only fires ~60% of clicks
+    for (let i = 0; i < 6; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = (e.clientX + (Math.random()-0.5)*30) + 'px';
+      c.style.top  = e.clientY + 'px';
+      c.style.background = CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)];
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.width = c.style.height = (5 + Math.random()*5) + 'px';
+      c.style.animationDuration = (0.6 + Math.random()*0.5) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 1200);
+    }
+  });
+</script>
+</body>
+</html>
