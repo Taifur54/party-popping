@@ -3,1152 +3,990 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Party Popping 🎈</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pacifico&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <title>Website Brief — taifur.dev</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --pink:    #FF3D8B;
-      --purple:  #8B2FC9;
-      --gold:    #FFD700;
-      --teal:    #00D4B4;
-      --coral:   #FF6B47;
-      --navy:    #0D0D2B;
-      --cream:   #FFF9F0;
-      --white:   #FFFFFF;
+      --bg:      #040810;
+      --surface: #0c1525;
+      --s2:      #111e33;
+      --cyan:    #00e5ff;
+      --lime:    #b8ff57;
+      --pink:    #ff5fa0;
+      --white:   #f0f4ff;
+      --muted:   rgba(240,244,255,0.45);
+      --border:  rgba(0,229,255,0.14);
+      --b2:      rgba(240,244,255,0.06);
     }
 
     html { scroll-behavior: smooth; }
-
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--navy);
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
       color: var(--white);
-      overflow-x: hidden;
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ctext y='24' font-size='24'%3E🎈%3C/text%3E%3C/svg%3E") 8 8, auto;
-    }
-
-    /* ── BALLOON CANVAS ── */
-    #balloonCanvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    /* ── FLOATING BALLOONS (background deco) ── */
-    .balloon-deco {
-      position: absolute;
-      font-size: 2.5rem;
-      animation: floatUp linear infinite;
-      pointer-events: none;
-      user-select: none;
-      opacity: 0.18;
-      z-index: 0;
-    }
-    @keyframes floatUp {
-      0%   { transform: translateY(0) rotate(-8deg); opacity: 0.18; }
-      50%  { transform: translateY(-40px) rotate(8deg); opacity: 0.22; }
-      100% { transform: translateY(0) rotate(-8deg); opacity: 0.18; }
-    }
-
-    /* ── CLICKABLE BALLOONS ── */
-    .pop-balloon {
-      position: fixed;
-      font-size: 2.8rem;
-      cursor: pointer;
-      z-index: 500;
-      animation: bobble 3s ease-in-out infinite;
-      transition: transform 0.1s;
-      user-select: none;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
-    }
-    .pop-balloon:hover { transform: scale(1.2); }
-    .pop-balloon:active { transform: scale(0.8); }
-    @keyframes bobble {
-      0%, 100% { transform: translateY(0) rotate(-5deg); }
-      50%       { transform: translateY(-18px) rotate(5deg); }
-    }
-
-    /* pop burst */
-    .pop-burst {
-      position: fixed;
-      pointer-events: none;
-      font-size: 2rem;
-      z-index: 9998;
-      animation: burstOut 0.7s ease-out forwards;
-    }
-    @keyframes burstOut {
-      0%   { transform: scale(0) rotate(0deg); opacity: 1; }
-      60%  { transform: scale(1.6) rotate(180deg); opacity: 1; }
-      100% { transform: scale(2.2) rotate(360deg); opacity: 0; }
-    }
-
-    /* confetti piece */
-    .confetti-piece {
-      position: fixed;
-      width: 8px; height: 8px;
-      border-radius: 2px;
-      pointer-events: none;
-      z-index: 9997;
-      animation: confettiFall 1.2s ease-out forwards;
-    }
-    @keyframes confettiFall {
-      0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
-      100% { transform: translateY(160px) rotate(720deg) scale(0.3); opacity: 0; }
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 48px;
-      background: rgba(13,13,43,0.85);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,61,139,0.2);
-    }
-    .nav-logo {
-      font-family: 'Pacifico', cursive;
-      font-size: 1.6rem;
-      background: linear-gradient(90deg, var(--pink), var(--gold), var(--teal));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-decoration: none;
-      letter-spacing: 0.02em;
-    }
-    .nav-links {
-      display: flex;
-      list-style: none;
-      gap: 32px;
-      align-items: center;
-    }
-    .nav-links a {
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--gold); }
-    .nav-book {
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: #fff !important;
-      padding: 10px 24px;
-      border-radius: 50px;
-      font-weight: 700 !important;
-      box-shadow: 0 4px 20px rgba(255,61,139,0.4);
-      transition: transform 0.2s, box-shadow 0.2s !important;
-    }
-    .nav-book:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,61,139,0.55) !important; color: #fff !important; }
-
-    /* ── HERO ── */
-    .hero {
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+      overflow-x: hidden;
+    }
+
+    /* grid bg */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.022) 1px, transparent 1px);
+      background-size: 56px 56px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(4,8,16,0.8);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem; font-weight: 800;
+      text-decoration: none; letter-spacing: 0.02em;
+    }
+    .topbar-logo span:first-child { color: var(--white); }
+    .topbar-logo span:last-child  { color: var(--cyan); }
+    .topbar-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      position: fixed; top: 64px; left: 0; right: 0;
+      z-index: 99;
+      background: rgba(4,8,16,0.7);
+      backdrop-filter: blur(10px);
+      padding: 14px 48px;
+      border-bottom: 1px solid var(--b2);
+      display: flex; align-items: center; gap: 20px;
+    }
+    .progress-steps { display: flex; gap: 6px; flex: 1; }
+    .progress-step {
+      flex: 1; height: 3px;
+      background: var(--b2);
+      border-radius: 2px;
+      transition: background 0.35s;
       position: relative;
       overflow: hidden;
-      padding: 120px 24px 80px;
-      background:
-        radial-gradient(ellipse at 20% 50%, rgba(139,47,201,0.35) 0%, transparent 55%),
-        radial-gradient(ellipse at 80% 30%, rgba(255,61,139,0.3) 0%, transparent 55%),
-        radial-gradient(ellipse at 50% 80%, rgba(0,212,180,0.2) 0%, transparent 50%),
-        var(--navy);
+    }
+    .progress-step.done { background: var(--cyan); box-shadow: 0 0 8px rgba(0,229,255,0.4); }
+    .progress-step.active { background: linear-gradient(90deg, var(--cyan), var(--lime)); box-shadow: 0 0 10px rgba(0,229,255,0.3); }
+    .progress-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem; color: var(--muted);
+      letter-spacing: 0.1em; white-space: nowrap;
+    }
+    .progress-label span { color: var(--cyan); }
+
+    /* ── WRAPPER ── */
+    .wrapper {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 160px 24px 60px;
+      position: relative; z-index: 2;
     }
 
-    /* confetti dots bg */
-    .hero::before {
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%; max-width: 760px;
+      padding: 52px 52px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px),
-        radial-gradient(circle, rgba(255,61,139,0.1) 1px, transparent 1px);
-      background-size: 40px 40px, 70px 70px;
-      background-position: 0 0, 20px 20px;
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--lime), var(--pink));
     }
 
-    .hero-content { position: relative; z-index: 2; max-width: 860px; }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,215,0,0.12);
-      border: 1px solid rgba(255,215,0,0.35);
-      color: var(--gold);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      padding: 8px 20px;
-      border-radius: 50px;
-      margin-bottom: 28px;
+    /* step panels */
+    .step { display: none; }
+    .step.active {
+      display: block;
+      animation: stepIn 0.38s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0); }
     }
 
-    .hero h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(5rem, 14vw, 11rem);
-      line-height: 0.9;
-      letter-spacing: 0.04em;
+    .step-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .step-eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--cyan); }
+
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem; font-weight: 800;
+      line-height: 1.15; letter-spacing: -0.01em;
+      margin-bottom: 8px; color: var(--white);
+    }
+    .step-title em { font-style: normal; color: var(--cyan); }
+
+    .step-sub {
+      font-size: 0.88rem; color: var(--muted);
+      line-height: 1.65; font-weight: 300;
+      margin-bottom: 36px;
+    }
+
+    /* ── CHOICE GRIDS ── */
+    .choice-grid { display: grid; gap: 12px; }
+    .choice-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+    .choice-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .choice {
+      background: var(--s2);
+      border: 1px solid var(--b2);
+      border-radius: 10px;
+      padding: 18px 20px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      position: relative;
+      user-select: none;
+    }
+    .choice:hover { border-color: rgba(0,229,255,0.3); background: rgba(0,229,255,0.04); transform: translateY(-2px); }
+    .choice.selected {
+      border-color: var(--cyan);
+      background: rgba(0,229,255,0.07);
+      box-shadow: 0 0 0 1px var(--cyan), 0 0 20px rgba(0,229,255,0.12);
+    }
+    .choice.selected .choice-check { opacity: 1; }
+
+    .choice-check {
+      position: absolute; top: 12px; right: 12px;
+      width: 20px; height: 20px;
+      background: var(--cyan);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; color: var(--bg);
+      font-weight: 900;
+      opacity: 0; transition: opacity 0.2s;
+    }
+
+    .choice-emoji { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+    .choice-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--white); margin-bottom: 4px;
+    }
+    .choice-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+
+    /* vibe cards — larger */
+    .vibe-card { padding: 24px 20px; }
+    .vibe-swatch {
+      width: 100%; height: 64px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+
+    /* ── COLOR PICKER ── */
+    .color-section { margin-bottom: 28px; }
+    .color-section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .color-presets { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .color-preset {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s, border-color 0.15s;
+      flex-shrink: 0;
+    }
+    .color-preset:hover { transform: scale(1.15); }
+    .color-preset.selected { border-color: var(--white); transform: scale(1.15); }
+
+    .color-custom-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .color-picker-input {
+      width: 44px; height: 44px;
+      border: 1px solid var(--b2);
+      border-radius: 8px;
+      cursor: pointer;
+      background: none;
+      padding: 2px;
+    }
+    .color-hex-display {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem; color: var(--cyan);
+      letter-spacing: 0.1em;
+      background: var(--s2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      min-width: 110px;
+    }
+    .color-label-text { font-size: 0.8rem; color: var(--muted); }
+
+    /* ── TEXT INPUTS ── */
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
       margin-bottom: 8px;
     }
-    .hero h1 .line1 {
-      background: linear-gradient(90deg, var(--pink) 0%, var(--gold) 50%, var(--teal) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: block;
-    }
-    .hero h1 .line2 {
-      background: linear-gradient(90deg, var(--teal) 0%, var(--purple) 50%, var(--pink) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: block;
-    }
-
-    .hero-sub {
-      font-size: 1.1rem;
-      color: rgba(255,255,255,0.7);
-      line-height: 1.7;
-      max-width: 560px;
-      margin: 24px auto 44px;
-      font-weight: 300;
-    }
-    .hero-sub strong { color: var(--gold); font-weight: 700; }
-
-    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-    .btn-glow {
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: #fff;
-      padding: 16px 40px;
-      border-radius: 50px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-decoration: none;
-      box-shadow: 0 6px 30px rgba(255,61,139,0.45);
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: inline-block;
-    }
-    .btn-glow:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,61,139,0.6); }
-
-    .btn-outline-gold {
-      border: 2px solid var(--gold);
-      color: var(--gold);
-      padding: 15px 36px;
-      border-radius: 50px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-decoration: none;
-      transition: background 0.2s, color 0.2s;
-      display: inline-block;
-    }
-    .btn-outline-gold:hover { background: var(--gold); color: var(--navy); }
-
-    .hero-scroll {
-      position: absolute;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: rgba(255,255,255,0.35);
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      animation: scrollBounce 2s ease-in-out infinite;
-    }
-    @keyframes scrollBounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%       { transform: translateX(-50%) translateY(8px); }
-    }
-
-    /* ── MARQUEE ── */
-    .marquee-wrap {
-      background: linear-gradient(90deg, var(--pink), var(--purple), var(--teal), var(--coral), var(--pink));
-      background-size: 300% 100%;
-      animation: gradientShift 6s linear infinite;
-      padding: 14px 0;
-      overflow: hidden;
-    }
-    @keyframes gradientShift {
-      0%   { background-position: 0% 50%; }
-      100% { background-position: 300% 50%; }
-    }
-    .marquee-track {
-      display: flex;
-      width: max-content;
-      animation: marqueeScroll 22s linear infinite;
-    }
-    .marquee-track span {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 24px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--navy);
-      white-space: nowrap;
-    }
-    .marquee-track span::after { content: '🎉'; font-size: 0.9rem; }
-    @keyframes marqueeScroll {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
-    /* ── SECTIONS ── */
-    section { position: relative; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
-
-    .section-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,215,0,0.1);
-      border: 1px solid rgba(255,215,0,0.3);
-      color: var(--gold);
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      padding: 6px 18px;
-      border-radius: 50px;
-      margin-bottom: 18px;
-    }
-
-    h2.big-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      line-height: 1;
-      letter-spacing: 0.04em;
-      margin-bottom: 20px;
-    }
-
-    /* ── ABOUT / VIBES ── */
-    .vibes-section {
-      padding: 100px 0;
-      background:
-        radial-gradient(ellipse at 90% 10%, rgba(255,61,139,0.15) 0%, transparent 50%),
-        var(--navy);
-    }
-    .vibes-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-    .vibes-text p {
-      color: rgba(255,255,255,0.65);
-      line-height: 1.8;
-      font-size: 0.95rem;
-      font-weight: 300;
-      margin-bottom: 18px;
-    }
-    .vibes-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 36px;
-    }
-    .stat-box {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 24px 20px;
-      text-align: center;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .stat-box:hover { border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.05); }
-    .stat-num {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 3rem;
-      background: linear-gradient(135deg, var(--gold), var(--coral));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: block;
-    }
-    .stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
-
-    .vibes-img-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .vibes-img-grid img {
-      width: 100%; border-radius: 16px; object-fit: cover;
-      transition: transform 0.3s;
-    }
-    .vibes-img-grid img:hover { transform: scale(1.03); }
-    .vibes-img-grid img:first-child { grid-column: span 2; height: 260px; }
-    .vibes-img-grid img:not(:first-child) { height: 180px; }
-
-    /* ── SERVICES ── */
-    .services-section {
-      padding: 100px 0;
-      background:
-        radial-gradient(ellipse at 10% 80%, rgba(139,47,201,0.2) 0%, transparent 50%),
-        radial-gradient(ellipse at 90% 20%, rgba(0,212,180,0.15) 0%, transparent 50%),
-        #0A0A24;
-    }
-    .services-header { text-align: center; margin-bottom: 64px; }
-    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-
-    .service-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px;
-      padding: 40px 30px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-    }
-    .service-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, var(--c1), var(--c2));
-      opacity: 0;
-      transition: opacity 0.3s;
-      border-radius: 20px;
-    }
-    .service-card:hover { transform: translateY(-8px); border-color: transparent; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
-    .service-card:hover::before { opacity: 0.12; }
-
-    .service-card:nth-child(1) { --c1: #FF3D8B; --c2: #FF6B47; }
-    .service-card:nth-child(2) { --c1: #8B2FC9; --c2: #FF3D8B; }
-    .service-card:nth-child(3) { --c1: #00D4B4; --c2: #8B2FC9; }
-    .service-card:nth-child(4) { --c1: #FFD700; --c2: #FF6B47; }
-    .service-card:nth-child(5) { --c1: #FF6B47; --c2: #00D4B4; }
-    .service-card:nth-child(6) { --c1: #FF3D8B; --c2: #8B2FC9; }
-
-    .service-emoji { font-size: 3rem; margin-bottom: 18px; display: block; }
-    .service-card h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.6rem;
-      letter-spacing: 0.06em;
-      color: #fff;
-      margin-bottom: 12px;
-      position: relative; z-index: 1;
-    }
-    .service-card p { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.65; position: relative; z-index: 1; }
-    .service-badge {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 5px 14px;
-      background: rgba(255,215,0,0.12);
-      border: 1px solid rgba(255,215,0,0.3);
-      border-radius: 50px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--gold);
-      position: relative; z-index: 1;
-    }
-
-    /* ── GALLERY ── */
-    .gallery-section { padding: 100px 0; background: var(--navy); }
-    .gallery-header { text-align: center; margin-bottom: 56px; }
-    .gallery-mosaic {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: 200px 200px;
-      gap: 12px;
-    }
-    .gallery-item { border-radius: 14px; overflow: hidden; position: relative; }
-    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
-    .gallery-item:hover img { transform: scale(1.08); }
-    .gallery-item.tall { grid-row: span 2; }
-    .gallery-item.wide { grid-column: span 2; }
-    .gallery-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(13,13,43,0.85));
-      opacity: 0;
-      transition: opacity 0.3s;
-      display: flex;
-      align-items: flex-end;
-      padding: 20px;
-    }
-    .gallery-item:hover .gallery-overlay { opacity: 1; }
-    .gallery-overlay span { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
-
-    /* ── UPCOMING ── */
-    .upcoming-section {
-      padding: 100px 0;
-      background:
-        radial-gradient(ellipse at 50% 0%, rgba(255,61,139,0.2) 0%, transparent 60%),
-        #0A0A24;
-    }
-    .upcoming-header { text-align: center; margin-bottom: 56px; }
-    .events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .event-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .event-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
-    .event-img { width: 100%; height: 180px; object-fit: cover; display: block; }
-    .event-date-bar {
-      background: linear-gradient(90deg, var(--pink), var(--purple));
-      padding: 8px 20px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .event-body { padding: 24px 22px 28px; }
-    .event-body h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 8px; }
-    .event-body p { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 18px; }
-    .event-rsvp {
-      display: inline-block;
-      background: rgba(255,215,0,0.1);
-      border: 1px solid rgba(255,215,0,0.35);
-      color: var(--gold);
-      padding: 8px 22px;
-      border-radius: 50px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: background 0.2s, color 0.2s;
-    }
-    .event-rsvp:hover { background: var(--gold); color: var(--navy); }
-
-    /* ── COLLABS ── */
-    .collabs-section { padding: 80px 0; background: var(--navy); }
-    .collabs-header { text-align: center; margin-bottom: 48px; }
-    .collabs-row {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-    .collab-chip {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 50px;
-      padding: 14px 24px;
-      transition: border-color 0.2s, background 0.2s, transform 0.2s;
-      text-decoration: none;
-    }
-    .collab-chip:hover { border-color: rgba(255,215,0,0.45); background: rgba(255,215,0,0.06); transform: translateY(-3px); }
-    .collab-icon { font-size: 1.5rem; }
-    .collab-name { font-size: 0.82rem; font-weight: 700; color: rgba(255,255,255,0.8); }
-    .collab-type { font-size: 0.65rem; color: rgba(255,255,255,0.35); letter-spacing: 0.08em; text-transform: uppercase; }
-
-    /* ── BOOKING ── */
-    .booking-section {
-      padding: 100px 0;
-      background:
-        radial-gradient(ellipse at 30% 50%, rgba(139,47,201,0.3) 0%, transparent 55%),
-        radial-gradient(ellipse at 70% 50%, rgba(255,61,139,0.25) 0%, transparent 55%),
-        #0A0A24;
-      text-align: center;
-    }
-    .booking-section h2 { margin-bottom: 14px; }
-    .booking-section > .container > p { color: rgba(255,255,255,0.6); font-size: 0.95rem; font-weight: 300; max-width: 500px; margin: 0 auto 52px; line-height: 1.7; }
-
-    .booking-form {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      padding: 48px 48px;
-      max-width: 680px;
-      margin: 0 auto;
-      text-align: left;
-    }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-    .form-group label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 14px 18px;
-      font-size: 0.88rem;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
+    .field input,
+    .field textarea,
+    .field select {
       width: 100%;
+      background: var(--s2);
+      border: 1px solid var(--b2);
+      border-radius: 8px;
+      padding: 13px 16px;
+      font-size: 0.88rem; color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
     }
-    .form-group input::placeholder,
-    .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus { border-color: rgba(255,61,139,0.5); background: rgba(255,61,139,0.05); }
-    .form-group select option { background: #1a1a3e; color: #fff; }
-    .form-group textarea { resize: vertical; min-height: 110px; }
+    .field input::placeholder,
+    .field textarea::placeholder { color: rgba(240,244,255,0.2); }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus { border-color: var(--cyan); }
+    .field select option { background: #0c1525; }
+    .field textarea { resize: vertical; min-height: 100px; }
 
-    .form-submit {
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* ── TOGGLE CHIPS ── */
+    .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .chip {
+      padding: 8px 16px;
+      background: var(--s2);
+      border: 1px solid var(--b2);
+      border-radius: 50px;
+      font-size: 0.78rem; color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .chip:hover { border-color: rgba(0,229,255,0.3); color: var(--white); }
+    .chip.on { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.07); }
+
+    /* ── RANGE SLIDER ── */
+    .range-wrap { margin-top: 8px; }
+    .range-labels { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; }
+    input[type=range] {
+      width: 100%; height: 4px;
+      -webkit-appearance: none;
+      background: linear-gradient(90deg, var(--cyan) var(--val, 50%), var(--b2) var(--val, 50%));
+      border-radius: 2px; outline: none; cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px rgba(0,229,255,0.5);
+      cursor: pointer;
+    }
+    .range-value {
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem; color: var(--cyan);
+      margin-top: 8px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row { display: flex; gap: 12px; margin-top: 36px; }
+    .btn-next {
+      flex: 1;
+      background: var(--cyan);
+      color: var(--bg);
+      border: none;
+      padding: 15px 28px;
+      border-radius: 8px;
+      font-size: 0.84rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .btn-next:hover { box-shadow: 0 0 24px rgba(0,229,255,0.4); transform: translateY(-2px); }
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--b2);
+      color: var(--muted);
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-back:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ── SUMMARY (final step) ── */
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+    .summary-item {
+      background: var(--s2);
+      border: 1px solid var(--b2);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+    .summary-key {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .summary-val { font-size: 0.88rem; font-weight: 600; color: var(--white); }
+    .summary-color-dot {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .submit-btn {
       width: 100%;
       padding: 18px;
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-      color: #fff;
+      background: linear-gradient(90deg, var(--cyan), var(--lime));
+      color: var(--bg);
       border: none;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      border-radius: 8px;
+      font-size: 0.9rem; font-weight: 800;
+      letter-spacing: 0.08em; text-transform: uppercase;
       cursor: pointer;
-      box-shadow: 0 6px 30px rgba(255,61,139,0.4);
-      transition: transform 0.2s, box-shadow 0.2s;
-      margin-top: 8px;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Syne', sans-serif;
+      transition: box-shadow 0.2s, transform 0.15s;
     }
-    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(255,61,139,0.6); }
+    .submit-btn:hover { box-shadow: 0 0 32px rgba(0,229,255,0.35); transform: translateY(-2px); }
 
-    /* ── FOOTER ── */
-    footer {
-      background: #060614;
-      padding: 60px 0 32px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+    /* ── DONE STATE ── */
+    .done-screen {
+      text-align: center; padding: 20px 0;
+      display: none;
     }
-    .footer-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 40px;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 60px;
-      margin-bottom: 48px;
+    .done-screen.show { display: block; animation: stepIn 0.5s ease forwards; }
+    .done-icon { font-size: 4rem; margin-bottom: 20px; }
+    .done-screen h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem; font-weight: 800;
+      color: var(--white); margin-bottom: 12px;
     }
-    .footer-brand p { font-size: 0.82rem; color: rgba(255,255,255,0.35); line-height: 1.75; max-width: 280px; margin-top: 16px; }
-    .footer-col h4 { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; font-weight: 700; }
-    .footer-col ul { list-style: none; }
-    .footer-col ul li { margin-bottom: 10px; }
-    .footer-col ul li a { font-size: 0.8rem; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
-    .footer-col ul li a:hover { color: var(--pink); }
-    .footer-socials { display: flex; gap: 12px; margin-top: 20px; }
-    .social-pill {
-      padding: 8px 18px;
-      border-radius: 50px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.5);
-      transition: all 0.2s;
-    }
-    .social-pill:hover { border-color: var(--pink); color: var(--pink); }
-    .footer-bottom {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 40px 0;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.2);
-    }
+    .done-screen h2 em { font-style: normal; color: var(--cyan); }
+    .done-screen p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; max-width: 420px; margin: 0 auto 28px; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      nav { padding: 16px 24px; }
-      .nav-links { display: none; }
-      .vibes-grid, .services-grid, .events-grid { grid-template-columns: 1fr 1fr; }
-      .gallery-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-      .gallery-item.tall, .gallery-item.wide { grid-column: span 1; grid-row: span 1; }
-      .footer-inner { grid-template-columns: 1fr 1fr; }
-      .form-row { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 580px) {
-      .hero h1 { font-size: 4.5rem; }
-      .container { padding: 0 20px; }
-      .vibes-grid, .services-grid, .events-grid, .gallery-mosaic { grid-template-columns: 1fr; }
-      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-      .booking-form { padding: 32px 24px; }
-      .collabs-row { gap: 12px; }
+    @media (max-width: 680px) {
+      .topbar { padding: 14px 20px; }
+      .progress-wrap { padding: 12px 20px; }
+      .card { padding: 36px 24px 32px; }
+      .choice-grid.cols-3 { grid-template-columns: 1fr 1fr; }
+      .choice-grid.cols-2 { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- CLICK-TO-POP BALLOONS -->
-<div class="pop-balloon" style="bottom:12%; left:3%;"  onclick="popBalloon(this, event)" title="Click me!">🎈</div>
-<div class="pop-balloon" style="bottom:25%; right:4%; animation-delay:1s;" onclick="popBalloon(this, event)" title="Click me!">🎀</div>
-<div class="pop-balloon" style="top:35%;  left:1%;  animation-delay:2s;" onclick="popBalloon(this, event)" title="Click me!">🎊</div>
-<div class="pop-balloon" style="top:60%;  right:2%; animation-delay:0.5s;" onclick="popBalloon(this, event)" title="Click me!">🎈</div>
-<div class="pop-balloon" style="bottom:45%; left:2%; animation-delay:1.5s;" onclick="popBalloon(this, event)" title="Click me!">🎉</div>
-<div class="pop-balloon" style="top:20%;  right:1%; animation-delay:2.5s;" onclick="popBalloon(this, event)" title="Click me!">🎈</div>
-
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">Party Popping 🎈</a>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#events">Upcoming</a></li>
-    <li><a href="#collabs">Collabs</a></li>
-    <li><a href="#book" class="nav-book">Book Now 🎉</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section class="hero" id="home">
-  <!-- deco balloons -->
-  <div class="balloon-deco" style="top:15%; left:8%;  animation-duration:5s;">🎈</div>
-  <div class="balloon-deco" style="top:25%; right:10%; animation-duration:6s; animation-delay:1s;">🎀</div>
-  <div class="balloon-deco" style="top:60%; left:5%;  animation-duration:7s; animation-delay:2s;">🎊</div>
-  <div class="balloon-deco" style="top:70%; right:8%; animation-duration:5.5s; animation-delay:0.5s;">🎉</div>
-  <div class="balloon-deco" style="top:40%; left:15%; animation-duration:8s; animation-delay:1.5s; font-size:1.8rem;">🎈</div>
-
-  <div class="hero-content">
-    <div class="hero-tag">✦ Schererville's Most Popping Event Planner</div>
-    <h1>
-      <span class="line1">Party</span>
-      <span class="line2">Popping</span>
-    </h1>
-    <p class="hero-sub">From <strong>last-minute pop-ups</strong> to <strong>luxury affairs</strong> — we make your celebration unforgettable. Book today and let's make your party POP! 🎊</p>
-    <div class="hero-btns">
-      <a href="#book" class="btn-glow">Book Your Party 🎈</a>
-      <a href="#gallery" class="btn-outline-gold">See Our Work ✨</a>
-    </div>
-  </div>
-
-  <div class="hero-scroll">
-    <span>Scroll</span>
-    <span style="font-size:1.2rem;">↓</span>
-  </div>
-</section>
-
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span>Birthday Parties</span>
-    <span>Baby Showers</span>
-    <span>Pop-Up Events</span>
-    <span>Luxury Affairs</span>
-    <span>Same-Week Bookings</span>
-    <span>Corporate Events</span>
-    <span>Balloon Décor</span>
-    <span>Custom Themes</span>
-    <span>Birthday Parties</span>
-    <span>Baby Showers</span>
-    <span>Pop-Up Events</span>
-    <span>Luxury Affairs</span>
-    <span>Same-Week Bookings</span>
-    <span>Corporate Events</span>
-    <span>Balloon Décor</span>
-    <span>Custom Themes</span>
-  </div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="#" class="topbar-logo"><span>taifur</span><span>.dev</span></a>
+  <div class="topbar-tag">Website Brief Form</div>
 </div>
 
-<!-- ABOUT -->
-<section class="vibes-section" id="about">
-  <div class="container">
-    <div class="vibes-grid">
-      <div class="vibes-text">
-        <div class="section-chip">✦ The Vibe</div>
-        <h2 class="big-title" style="background:linear-gradient(90deg,#FF3D8B,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">We Do Both Worlds.</h2>
-        <p>Whether you need a last-minute pop-up that goes viral or an elegant luxury event that drops jaws — <strong style="color:#fff;">Party Popping</strong> does it all with style, speed, and serious energy.</p>
-        <p>No event is too big, too small, or too spontaneous. We specialize in making magic happen fast — because life is too short to wait on a party.</p>
-        <div class="vibes-stats">
-          <div class="stat-box">
-            <span class="stat-num">50+</span>
-            <span class="stat-label">Events Done</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-num">48h</span>
-            <span class="stat-label">Fastest Turnaround</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-num">100%</span>
-            <span class="stat-label">Smiles Guaranteed</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-num">2</span>
-            <span class="stat-label">Vibes: Lit & Luxury</span>
-          </div>
-        </div>
-      </div>
-      <div class="vibes-img-grid">
-        <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&q=80" alt="Party event"/>
-        <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&q=80" alt="Balloon decor"/>
-        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80" alt="Luxury party"/>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-steps" id="progressSteps"></div>
+  <div class="progress-label">Step <span id="stepCounter">1</span> of 8</div>
+</div>
 
-<!-- SERVICES -->
-<section class="services-section" id="services">
-  <div class="container">
-    <div class="services-header">
-      <div class="section-chip">✦ What We Do</div>
-      <h2 class="big-title" style="background:linear-gradient(90deg,#00D4B4,#8B2FC9,#FF3D8B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Services</h2>
-    </div>
-    <div class="services-grid">
-      <div class="service-card">
-        <span class="service-emoji">🎂</span>
-        <h3>Birthday Parties</h3>
-        <p>From intimate gatherings to full-blown bashes — every birthday deserves to be legendary.</p>
-        <span class="service-badge">Most Popular</span>
-      </div>
-      <div class="service-card">
-        <span class="service-emoji">🎊</span>
-        <h3>Pop-Up Events</h3>
-        <p>Last-minute? No problem. We specialize in making surprise parties happen — fast.</p>
-        <span class="service-badge">Our Specialty</span>
-      </div>
-      <div class="service-card">
-        <span class="service-emoji">👶</span>
-        <h3>Baby Showers</h3>
-        <p>Sweet, stylish, and full of love. We create the perfect vibe for welcoming new life.</p>
-        <span class="service-badge">Fan Favorite</span>
-      </div>
-      <div class="service-card">
-        <span class="service-emoji">💎</span>
-        <h3>Luxury Affairs</h3>
-        <p>High-end events that feel like a dream. Elegant setups, premium décor, unforgettable moments.</p>
-        <span class="service-badge">Premium</span>
-      </div>
-      <div class="service-card">
-        <span class="service-emoji">🏢</span>
-        <h3>Corporate Events</h3>
-        <p>Make your next company event actually fun. Team celebrations, launches, milestones — we've got it.</p>
-        <span class="service-badge">Available</span>
-      </div>
-      <div class="service-card">
-        <span class="service-emoji">🎈</span>
-        <h3>Custom Themes</h3>
-        <p>Have a wild vision? We'll bring it to life. Completely custom themes built around your personality.</p>
-        <span class="service-badge">Fully Custom</span>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- MAIN WRAPPER -->
+<div class="wrapper">
+  <div class="card" id="mainCard">
 
-<!-- GALLERY -->
-<section class="gallery-section" id="gallery">
-  <div class="container">
-    <div class="gallery-header">
-      <div class="section-chip">✦ Our Work</div>
-      <h2 class="big-title" style="background:linear-gradient(90deg,#FFD700,#FF3D8B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">The Portfolio</h2>
-    </div>
-    <div class="gallery-mosaic">
-      <div class="gallery-item tall">
-        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80" alt="Event 1"/>
-        <div class="gallery-overlay"><span>Birthday Bash 🎂</span></div>
-      </div>
-      <div class="gallery-item wide">
-        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=900&q=80" alt="Event 2"/>
-        <div class="gallery-overlay"><span>Luxury Setup 💎</span></div>
-      </div>
-      <div class="gallery-item">
-        <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&q=80" alt="Event 3"/>
-        <div class="gallery-overlay"><span>Balloon Décor 🎈</span></div>
-      </div>
-      <div class="gallery-item">
-        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=500&q=80" alt="Event 4"/>
-        <div class="gallery-overlay"><span>Baby Shower 👶</span></div>
-      </div>
-      <div class="gallery-item">
-        <img src="https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=500&q=80" alt="Event 5"/>
-        <div class="gallery-overlay"><span>Pop-Up Party 🎊</span></div>
-      </div>
-      <div class="gallery-item wide">
-        <img src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=900&q=80" alt="Event 6"/>
-        <div class="gallery-overlay"><span>Night Event ✨</span></div>
-      </div>
-    </div>
-  </div>
-</section>
+    <!-- ─── STEP 1: Business Info ─── -->
+    <div class="step active" data-step="1">
+      <div class="step-eyebrow">Step 1 — The Basics</div>
+      <h2 class="step-title">Tell me about your <em>business</em>.</h2>
+      <p class="step-sub">Just the essentials to get started. I'll use this to tailor every design decision.</p>
 
-<!-- UPCOMING EVENTS -->
-<section class="upcoming-section" id="events">
-  <div class="container">
-    <div class="upcoming-header">
-      <div class="section-chip">✦ What's Popping</div>
-      <h2 class="big-title" style="background:linear-gradient(90deg,#FF3D8B,#00D4B4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Upcoming Events</h2>
-    </div>
-    <div class="events-grid">
-      <div class="event-card">
-        <img class="event-img" src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80" alt="Pop-up party"/>
-        <div class="event-date-bar"><span>📅 Coming Soon</span><span>🎈 Pop-Up</span></div>
-        <div class="event-body">
-          <h3>Summer Pop-Up Bash</h3>
-          <p>An unexpected outdoor pop-up celebration with live music, balloon walls, and good energy only. Location drops 24hrs before.</p>
-          <a href="#book" class="event-rsvp">Get Notified 🔔</a>
-        </div>
-      </div>
-      <div class="event-card">
-        <img class="event-img" src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&q=80" alt="Luxury event"/>
-        <div class="event-date-bar"><span>📅 Coming Soon</span><span>💎 Luxury</span></div>
-        <div class="event-body">
-          <h3>Black & Gold Gala</h3>
-          <p>An elegant evening affair. Premium décor, champagne tower, and a vibe that screams luxury from start to finish.</p>
-          <a href="#book" class="event-rsvp">RSVP Now 🥂</a>
-        </div>
-      </div>
-      <div class="event-card">
-        <img class="event-img" src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80" alt="Baby shower"/>
-        <div class="event-date-bar"><span>📅 Coming Soon</span><span>👶 Shower</span></div>
-        <div class="event-body">
-          <h3>Community Baby Shower</h3>
-          <p>A free community baby shower for expecting moms. Gifts, food, and all the love in the world. Stay tuned for details.</p>
-          <a href="#book" class="event-rsvp">Learn More 💕</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- COLLABS -->
-<section class="collabs-section" id="collabs">
-  <div class="container">
-    <div class="collabs-header">
-      <div class="section-chip">✦ The Squad</div>
-      <h2 class="big-title" style="background:linear-gradient(90deg,#8B2FC9,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Collaborators</h2>
-    </div>
-    <div class="collabs-row">
-      <a href="#" class="collab-chip">
-        <span class="collab-icon">📸</span>
-        <div><div class="collab-name">Your Photographer</div><div class="collab-type">Photography</div></div>
-      </a>
-      <a href="#" class="collab-chip">
-        <span class="collab-icon">🎨</span>
-        <div><div class="collab-name">Your Designer</div><div class="collab-type">Web Design</div></div>
-      </a>
-      <a href="#" class="collab-chip">
-        <span class="collab-icon">🎵</span>
-        <div><div class="collab-name">DJ / Music</div><div class="collab-type">Entertainment</div></div>
-      </a>
-      <a href="#" class="collab-chip">
-        <span class="collab-icon">🎂</span>
-        <div><div class="collab-name">Cake Vendor</div><div class="collab-type">Catering</div></div>
-      </a>
-      <a href="#" class="collab-chip">
-        <span class="collab-icon">🌸</span>
-        <div><div class="collab-name">Florist</div><div class="collab-type">Floral Design</div></div>
-      </a>
-      <a href="#" class="collab-chip">
-        <span class="collab-icon">🎭</span>
-        <div><div class="collab-name">Entertainment Co.</div><div class="collab-type">Events</div></div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- BOOKING -->
-<section class="booking-section" id="book">
-  <div class="container">
-    <div class="section-chip" style="margin:0 auto 18px;">✦ Let's Party</div>
-    <h2 class="big-title" style="background:linear-gradient(90deg,#FF3D8B,#FFD700,#00D4B4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Book Your Event</h2>
-    <p>Fill out the form below and we'll get back to you ASAP — usually within a few hours. Last-minute requests welcome! 🎉</p>
-    <div class="booking-form">
-      <div class="form-row">
-        <div class="form-group">
+      <div class="field-row">
+        <div class="field">
           <label>Your Name</label>
-          <input type="text" placeholder="e.g. Jasmine Carter"/>
+          <input type="text" id="clientName" placeholder="e.g. Jessica Turner"/>
         </div>
-        <div class="form-group">
-          <label>Phone / Instagram</label>
-          <input type="text" placeholder="@yourhandle or 555-0000"/>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Event Type</label>
-          <select>
-            <option value="">Select an event type</option>
-            <option>Birthday Party</option>
-            <option>Pop-Up Event</option>
-            <option>Baby Shower</option>
-            <option>Luxury Affair</option>
-            <option>Corporate Event</option>
-            <option>Custom Theme</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Estimated Date</label>
-          <input type="date"/>
+        <div class="field">
+          <label>Business Name</label>
+          <input type="text" id="bizName" placeholder="e.g. Turner Dental Care"/>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Guest Count</label>
-          <input type="text" placeholder="e.g. 30–50 people"/>
+      <div class="field">
+        <label>Industry / Type of Business</label>
+        <select id="bizType">
+          <option value="">Select your industry</option>
+          <option>Dental / Medical</option>
+          <option>Plumbing / HVAC</option>
+          <option>Roofing / Construction</option>
+          <option>Beauty / Nail Salon</option>
+          <option>Hair Salon / Barbershop</option>
+          <option>Auto / Car Detailing</option>
+          <option>Restaurant / Café</option>
+          <option>Law Firm</option>
+          <option>Real Estate</option>
+          <option>Fitness / Gym</option>
+          <option>Event Planning</option>
+          <option>Retail / E-commerce</option>
+          <option>Photography / Creative</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>City & State</label>
+          <input type="text" id="bizLocation" placeholder="e.g. Chicago, IL"/>
         </div>
-        <div class="form-group">
-          <label>Budget Range</label>
-          <select>
-            <option value="">Select a range</option>
-            <option>Under $500</option>
-            <option>$500 – $1,000</option>
-            <option>$1,000 – $2,500</option>
-            <option>$2,500 – $5,000</option>
-            <option>$5,000+</option>
-          </select>
+        <div class="field">
+          <label>Website (if you have one)</label>
+          <input type="text" id="existingSite" placeholder="e.g. myoldsite.com or None"/>
         </div>
       </div>
-      <div class="form-group">
-        <label>Tell Me About Your Vision 🎈</label>
-        <textarea placeholder="Describe the vibe, theme, any special requests, or just say 'surprise me!'"></textarea>
-      </div>
-      <button class="form-submit" onclick="handleSubmit(event)">Send It! Let's Get This Party Started 🎉</button>
+      <div class="btn-row"><button class="btn-next" onclick="nextStep()">Next →</button></div>
     </div>
-  </div>
-</section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <a href="#" class="nav-logo" style="font-size:1.4rem;">Party Popping 🎈</a>
-      <p>From last-minute pop-ups to luxury galas — we make every celebration unforgettable.</p>
-      <div class="footer-socials">
-        <a href="#" class="social-pill">📸 Instagram</a>
-        <a href="#" class="social-pill">🎵 TikTok</a>
-        <a href="#" class="social-pill">💬 DM Us</a>
+    <!-- ─── STEP 2: Vibe ─── -->
+    <div class="step" data-step="2">
+      <div class="step-eyebrow">Step 2 — The Vibe</div>
+      <h2 class="step-title">What's the overall <em>feel</em>?</h2>
+      <p class="step-sub">Pick the aesthetic that best matches your brand. This shapes everything — layout, fonts, and imagery.</p>
+
+      <div class="choice-grid cols-2">
+        <div class="choice vibe-card" onclick="selectChoice(this,'vibe')">
+          <div class="choice-check">✓</div>
+          <div class="vibe-swatch" style="background:linear-gradient(135deg,#0E2A47,#1A7A8A);"></div>
+          <div class="choice-label">Clean & Professional</div>
+          <div class="choice-desc">Trust-building, corporate-friendly. Great for medical, law, finance.</div>
+        </div>
+        <div class="choice vibe-card" onclick="selectChoice(this,'vibe')">
+          <div class="choice-check">✓</div>
+          <div class="vibe-swatch" style="background:linear-gradient(135deg,#040810,#00e5ff33);"></div>
+          <div class="choice-label">Dark & Futuristic</div>
+          <div class="choice-desc">Bold, techy, and modern. Great for tech, automotive, studios.</div>
+        </div>
+        <div class="choice vibe-card" onclick="selectChoice(this,'vibe')">
+          <div class="choice-check">✓</div>
+          <div class="vibe-swatch" style="background:linear-gradient(135deg,#1A0A2E,#8B2FC9,#FF3D8B);"></div>
+          <div class="choice-label">Luxury & High-End</div>
+          <div class="choice-desc">Elevated, refined, premium feel. Perfect for salons, spas, boutiques.</div>
+        </div>
+        <div class="choice vibe-card" onclick="selectChoice(this,'vibe')">
+          <div class="choice-check">✓</div>
+          <div class="vibe-swatch" style="background:linear-gradient(135deg,#FFF9F0,#F0D080,#E8C068);"></div>
+          <div class="choice-label">Warm & Welcoming</div>
+          <div class="choice-desc">Friendly, approachable, community feel. Great for restaurants, family biz.</div>
+        </div>
+        <div class="choice vibe-card" onclick="selectChoice(this,'vibe')">
+          <div class="choice-check">✓</div>
+          <div class="vibe-swatch" style="background:linear-gradient(135deg,#FF3D8B,#FFD700,#00D4B4);"></div>
+          <div class="choice-label">Playful & Colorful</div>
+          <div class="choice-desc">Fun, energetic, vibrant. Perfect for events, kids, entertainment.</div>
+        </div>
+        <div class="choice vibe-card" onclick="selectChoice(this,'vibe')">
+          <div class="choice-check">✓</div>
+          <div class="vibe-swatch" style="background:linear-gradient(135deg,#F5F5F0,#2D3A2E,#4A7C59);"></div>
+          <div class="choice-label">Natural & Organic</div>
+          <div class="choice-desc">Earthy, calm, sustainable. Great for wellness, food, outdoors.</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep()">← Back</button>
+        <button class="btn-next" onclick="nextStep()">Next →</button>
       </div>
     </div>
-    <div class="footer-col">
-      <h4>Services</h4>
-      <ul>
-        <li><a href="#services">Birthday Parties</a></li>
-        <li><a href="#services">Pop-Up Events</a></li>
-        <li><a href="#services">Baby Showers</a></li>
-        <li><a href="#services">Luxury Affairs</a></li>
-        <li><a href="#services">Corporate Events</a></li>
-        <li><a href="#services">Custom Themes</a></li>
-      </ul>
+
+    <!-- ─── STEP 3: Colors ─── -->
+    <div class="step" data-step="3">
+      <div class="step-eyebrow">Step 3 — Colors</div>
+      <h2 class="step-title">Pick your <em>color palette</em>.</h2>
+      <p class="step-sub">Choose preset colors or enter your own hex codes. You can pick one or mix them.</p>
+
+      <!-- Primary -->
+      <div class="color-section">
+        <div class="color-section-label">Primary Color (main brand color)</div>
+        <div class="color-presets" id="primaryPresets">
+          <div class="color-preset" style="background:#1A7A8A" onclick="pickPreset(this,'primary','#1A7A8A')"></div>
+          <div class="color-preset" style="background:#0E2A47" onclick="pickPreset(this,'primary','#0E2A47')"></div>
+          <div class="color-preset" style="background:#8B2FC9" onclick="pickPreset(this,'primary','#8B2FC9')"></div>
+          <div class="color-preset" style="background:#FF3D8B" onclick="pickPreset(this,'primary','#FF3D8B')"></div>
+          <div class="color-preset" style="background:#D4A843" onclick="pickPreset(this,'primary','#D4A843')"></div>
+          <div class="color-preset" style="background:#00D4B4" onclick="pickPreset(this,'primary','#00D4B4')"></div>
+          <div class="color-preset" style="background:#4A7C59" onclick="pickPreset(this,'primary','#4A7C59')"></div>
+          <div class="color-preset" style="background:#E63946" onclick="pickPreset(this,'primary','#E63946')"></div>
+          <div class="color-preset" style="background:#2B4162" onclick="pickPreset(this,'primary','#2B4162')"></div>
+          <div class="color-preset" style="background:#FF6B47" onclick="pickPreset(this,'primary','#FF6B47')"></div>
+        </div>
+        <div class="color-custom-row">
+          <input type="color" class="color-picker-input" id="primaryPicker" value="#1A7A8A" oninput="customColor('primary',this.value)"/>
+          <div class="color-hex-display" id="primaryHex">#1A7A8A</div>
+          <span class="color-label-text">or enter custom hex above</span>
+        </div>
+      </div>
+
+      <!-- Accent -->
+      <div class="color-section">
+        <div class="color-section-label">Accent Color (buttons, highlights)</div>
+        <div class="color-presets" id="accentPresets">
+          <div class="color-preset" style="background:#FFD700" onclick="pickPreset(this,'accent','#FFD700')"></div>
+          <div class="color-preset" style="background:#00e5ff" onclick="pickPreset(this,'accent','#00e5ff')"></div>
+          <div class="color-preset" style="background:#b8ff57" onclick="pickPreset(this,'accent','#b8ff57')"></div>
+          <div class="color-preset" style="background:#FF3D8B" onclick="pickPreset(this,'accent','#FF3D8B')"></div>
+          <div class="color-preset" style="background:#FF6B47" onclick="pickPreset(this,'accent','#FF6B47')"></div>
+          <div class="color-preset" style="background:#ffffff" onclick="pickPreset(this,'accent','#ffffff')"></div>
+          <div class="color-preset" style="background:#A8DADC" onclick="pickPreset(this,'accent','#A8DADC')"></div>
+          <div class="color-preset" style="background:#F4A261" onclick="pickPreset(this,'accent','#F4A261')"></div>
+          <div class="color-preset" style="background:#E9C46A" onclick="pickPreset(this,'accent','#E9C46A')"></div>
+          <div class="color-preset" style="background:#8338EC" onclick="pickPreset(this,'accent','#8338EC')"></div>
+        </div>
+        <div class="color-custom-row">
+          <input type="color" class="color-picker-input" id="accentPicker" value="#FFD700" oninput="customColor('accent',this.value)"/>
+          <div class="color-hex-display" id="accentHex">#FFD700</div>
+          <span class="color-label-text">or enter custom hex above</span>
+        </div>
+      </div>
+
+      <!-- Background tone -->
+      <div class="color-section">
+        <div class="color-section-label">Background Tone</div>
+        <div class="choice-grid cols-3">
+          <div class="choice" onclick="selectChoice(this,'bgTone')" style="padding:14px 16px;gap:8px;display:flex;align-items:center;">
+            <div style="width:28px;height:28px;border-radius:6px;background:#040810;border:1px solid rgba(255,255,255,0.1);flex-shrink:0;"></div>
+            <div><div class="choice-label" style="font-size:0.82rem;">Dark</div><div class="choice-desc">Deep navy / black</div></div>
+            <div class="choice-check">✓</div>
+          </div>
+          <div class="choice" onclick="selectChoice(this,'bgTone')" style="padding:14px 16px;gap:8px;display:flex;align-items:center;">
+            <div style="width:28px;height:28px;border-radius:6px;background:#F8F4EE;border:1px solid rgba(0,0,0,0.1);flex-shrink:0;"></div>
+            <div><div class="choice-label" style="font-size:0.82rem;">Light</div><div class="choice-desc">White / cream</div></div>
+            <div class="choice-check">✓</div>
+          </div>
+          <div class="choice" onclick="selectChoice(this,'bgTone')" style="padding:14px 16px;gap:8px;display:flex;align-items:center;">
+            <div style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#040810,#F8F4EE);border:1px solid rgba(255,255,255,0.1);flex-shrink:0;"></div>
+            <div><div class="choice-label" style="font-size:0.82rem;">Mixed</div><div class="choice-desc">Both sections</div></div>
+            <div class="choice-check">✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep()">← Back</button>
+        <button class="btn-next" onclick="nextStep()">Next →</button>
+      </div>
     </div>
-    <div class="footer-col">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#events">Upcoming Events</a></li>
-        <li><a href="#collabs">Collaborators</a></li>
-        <li><a href="#book">Book Now</a></li>
-      </ul>
+
+    <!-- ─── STEP 4: Layout / Style ─── -->
+    <div class="step" data-step="4">
+      <div class="step-eyebrow">Step 4 — Layout Style</div>
+      <h2 class="step-title">How should it <em>feel</em> to browse?</h2>
+      <p class="step-sub">Layout and spacing dramatically affect how professional and trustworthy a website feels.</p>
+
+      <div class="choice-grid cols-2">
+        <div class="choice" onclick="selectChoice(this,'layout')">
+          <div class="choice-check">✓</div>
+          <span class="choice-emoji">🧱</span>
+          <div class="choice-label">Bold & Structured</div>
+          <div class="choice-desc">Strong sections, clear hierarchy, powerful headings. Commands attention.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'layout')">
+          <div class="choice-check">✓</div>
+          <span class="choice-emoji">🌬️</span>
+          <div class="choice-label">Clean & Spacious</div>
+          <div class="choice-desc">Lots of breathing room, minimal clutter, very modern and refined feel.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'layout')">
+          <div class="choice-check">✓</div>
+          <span class="choice-emoji">🖼️</span>
+          <div class="choice-label">Photo-Forward</div>
+          <div class="choice-desc">Big, immersive images everywhere. Let your work or space do the talking.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'layout')">
+          <div class="choice-check">✓</div>
+          <span class="choice-emoji">📋</span>
+          <div class="choice-label">Info-Dense</div>
+          <div class="choice-desc">All the details, services, and pricing visible at a glance. Nothing hidden.</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep()">← Back</button>
+        <button class="btn-next" onclick="nextStep()">Next →</button>
+      </div>
     </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 Party Popping. All rights reserved. 🎈</span>
-    <span>Made with love & confetti ✨</span>
-  </div>
-</footer>
+
+    <!-- ─── STEP 5: Pages & Features ─── -->
+    <div class="step" data-step="5">
+      <div class="step-eyebrow">Step 5 — Pages & Features</div>
+      <h2 class="step-title">What does your site <em>need</em>?</h2>
+      <p class="step-sub">Select all the pages and features you want. I'll include everything checked.</p>
+
+      <div class="field">
+        <label>Pages (select all that apply)</label>
+        <div class="chip-group" id="pagesGroup">
+          <div class="chip on" onclick="toggleChip(this)">Home</div>
+          <div class="chip on" onclick="toggleChip(this)">About Us</div>
+          <div class="chip on" onclick="toggleChip(this)">Services</div>
+          <div class="chip on" onclick="toggleChip(this)">Contact</div>
+          <div class="chip" onclick="toggleChip(this)">Gallery / Portfolio</div>
+          <div class="chip" onclick="toggleChip(this)">Pricing</div>
+          <div class="chip" onclick="toggleChip(this)">Blog</div>
+          <div class="chip" onclick="toggleChip(this)">FAQ</div>
+          <div class="chip" onclick="toggleChip(this)">Testimonials</div>
+          <div class="chip" onclick="toggleChip(this)">Team / Staff</div>
+          <div class="chip" onclick="toggleChip(this)">Menu (restaurant)</div>
+          <div class="chip" onclick="toggleChip(this)">Booking Page</div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:22px;">
+        <label>Special Features</label>
+        <div class="chip-group" id="featuresGroup">
+          <div class="chip" onclick="toggleChip(this)">Online Booking / Scheduler</div>
+          <div class="chip" onclick="toggleChip(this)">Contact Form</div>
+          <div class="chip" onclick="toggleChip(this)">Click-to-Call Button</div>
+          <div class="chip" onclick="toggleChip(this)">Google Maps Embed</div>
+          <div class="chip" onclick="toggleChip(this)">Live Chat Widget</div>
+          <div class="chip" onclick="toggleChip(this)">Photo Gallery / Slideshow</div>
+          <div class="chip" onclick="toggleChip(this)">Customer Reviews Section</div>
+          <div class="chip" onclick="toggleChip(this)">Social Media Links</div>
+          <div class="chip" onclick="toggleChip(this)">WhatsApp Button</div>
+          <div class="chip" onclick="toggleChip(this)">Newsletter Signup</div>
+          <div class="chip" onclick="toggleChip(this)">Before / After Photos</div>
+          <div class="chip" onclick="toggleChip(this)">Video Background / Hero</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep()">← Back</button>
+        <button class="btn-next" onclick="nextStep()">Next →</button>
+      </div>
+    </div>
+
+    <!-- ─── STEP 6: Typography ─── -->
+    <div class="step" data-step="6">
+      <div class="step-eyebrow">Step 6 — Typography</div>
+      <h2 class="step-title">How should your text <em>look</em>?</h2>
+      <p class="step-sub">Font choice alone changes how a brand feels. Pick what feels right for you.</p>
+
+      <div class="choice-grid cols-2">
+        <div class="choice" onclick="selectChoice(this,'fontStyle')">
+          <div class="choice-check">✓</div>
+          <div style="font-family:serif;font-size:1.4rem;font-weight:700;margin-bottom:8px;color:var(--white)">Serif Elegance</div>
+          <div class="choice-desc">Traditional, trustworthy, luxury feel. Think Playfair Display, Cormorant.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'fontStyle')">
+          <div class="choice-check">✓</div>
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:8px;color:var(--white)">BOLD SANS</div>
+          <div class="choice-desc">Strong, modern, and powerful. Think Syne, Bebas Neue.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'fontStyle')">
+          <div class="choice-check">✓</div>
+          <div style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:500;margin-bottom:8px;color:var(--white)">Clean & Minimal</div>
+          <div class="choice-desc">Simple, readable, tech-forward. Think Outfit, Inter, DM Sans.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'fontStyle')">
+          <div class="choice-check">✓</div>
+          <div style="font-family:cursive;font-size:1.4rem;font-weight:600;margin-bottom:8px;color:var(--white)">Friendly & Round</div>
+          <div class="choice-desc">Warm, playful, approachable. Think Nunito, Poppins, Pacifico.</div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:28px;">
+        <label>Font Size Preference</label>
+        <div class="range-wrap">
+          <div class="range-labels"><span>Compact</span><span>Balanced</span><span>Large & Bold</span></div>
+          <input type="range" id="fontSizeRange" min="1" max="3" value="2" step="1" oninput="updateRange(this,'fontSizeVal','fontSize',['Compact','Balanced','Large & Bold'])"/>
+          <div class="range-value" id="fontSizeVal">Balanced</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep()">← Back</button>
+        <button class="btn-next" onclick="nextStep()">Next →</button>
+      </div>
+    </div>
+
+    <!-- ─── STEP 7: Budget & Timeline ─── -->
+    <div class="step" data-step="7">
+      <div class="step-eyebrow">Step 7 — Budget & Timeline</div>
+      <h2 class="step-title">When do you need it, and <em>what's your budget</em>?</h2>
+      <p class="step-sub">I deliver fast — most sites are live within 3–5 days. Let me know what works for you.</p>
+
+      <div class="choice-grid cols-2" style="margin-bottom:24px;">
+        <div class="choice" onclick="selectChoice(this,'budget')">
+          <div class="choice-check">✓</div>
+          <span class="choice-emoji">🌱</span>
+          <div class="choice-label">$150 – $250</div>
+          <div class="choice-desc">Single-page starter site. Clean, fast, professional. Perfect to get online.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'budget')">
+          <div class="choice-check">✓</div>
+          <span class="choice-emoji">⚡</span>
+          <div class="choice-label">$250 – $400</div>
+          <div class="choice-desc">Full multi-page site with all the bells and whistles. Most popular option.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'budget')">
+          <div class="choice-check">✓</div>
+          <span class="choice-emoji">💎</span>
+          <div class="choice-label">$400 – $600</div>
+          <div class="choice-desc">Premium custom design with advanced features, animations, and SEO setup.</div>
+        </div>
+        <div class="choice" onclick="selectChoice(this,'budget')">
+          <div class="choice-check">✓</div>
+          <span class="choice-emoji">🚀</span>
+          <div class="choice-label">$600+</div>
+          <div class="choice-desc">Complex build — e-commerce, custom integrations, or large site. Let's talk.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>How fast do you need it?</label>
+        <div class="chip-group" id="timelineGroup">
+          <div class="chip" onclick="toggleChip(this,'timelineGroup')">ASAP (1–3 days)</div>
+          <div class="chip on" onclick="toggleChip(this,'timelineGroup')">Standard (3–5 days)</div>
+          <div class="chip" onclick="toggleChip(this,'timelineGroup')">Flexible (1–2 weeks)</div>
+          <div class="chip" onclick="toggleChip(this,'timelineGroup')">No rush</div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:18px;">
+        <label>Preferred Contact Method</label>
+        <div class="chip-group" id="contactGroup">
+          <div class="chip on" onclick="toggleChip(this,'contactGroup')">WhatsApp</div>
+          <div class="chip" onclick="toggleChip(this,'contactGroup')">Email</div>
+          <div class="chip" onclick="toggleChip(this,'contactGroup')">Either is fine</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="prevStep()">← Back</button>
+        <button class="btn-next" onclick="nextStep()">Next →</button>
+      </div>
+    </div>
+
+    <!-- ─── STEP 8: Final Notes & Submit ─── -->
+    <div class="step" data-step="8">
+      <div class="step-eyebrow">Step 8 — Final Details</div>
+      <h2 class="step-title">Anything else I should <em>know</em>?</h2>
+      <p class="step-sub">Add any references, inspirations, or special requests. Then review your brief and send it.</p>
+
+      <div class="field">
+        <label>Website Inspiration (links or descriptions)</label>
+        <input type="text" id="inspo" placeholder="e.g. I love how apple.com looks, or www.example.com"/>
+      </div>
+      <div class="field">
+        <label>Your Contact — Email or Phone</label>
+        <input type="text" id="contactInfo" placeholder="e.g. you@email.com or +1 555 000 0000"/>
+      </div>
+      <div class="field">
+        <label>Anything else you want me to know?</label>
+        <textarea id="extraNotes" placeholder="Special requests, must-haves, things you hate on websites, your tagline — anything goes."></textarea>
+      </div>
+
+      <!-- SUMMARY -->
+      <div style="margin-top:28px;margin-bottom:8px;">
+        <div class="step-eyebrow" style="margin-bottom:14px;">Your Brief Summary</div>
+        <div class="summary-grid" id="summaryGrid"></div>
+      </div>
+
+      <button class="submit-btn" onclick="submitBrief()">Send My Brief → Get a Quote 🚀</button>
+
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn-back" onclick="prevStep()">← Back</button>
+      </div>
+    </div>
+
+    <!-- ─── DONE ─── -->
+    <div class="done-screen" id="doneScreen">
+      <div class="done-icon">🚀</div>
+      <h2>Brief <em>Sent!</em></h2>
+      <p>Your project brief is on its way. I'll review everything and get back to you within a few hours — usually less. Check your WhatsApp or email!</p>
+      <a href="https://wa.me/8801779264624" target="_blank" style="display:inline-block;background:var(--cyan);color:var(--bg);padding:14px 32px;border-radius:8px;font-weight:700;font-size:0.84rem;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;margin-top:8px;">Open WhatsApp →</a>
+    </div>
+
+  </div><!-- /card -->
+</div><!-- /wrapper -->
 
 <script>
-  // ── POP BALLOON on click ──
-  const CONFETTI_COLORS = ['#FF3D8B','#FFD700','#00D4B4','#8B2FC9','#FF6B47','#fff','#FF9ECD'];
+  // ── STATE ──
+  const state = {
+    step: 1,
+    totalSteps: 8,
+    vibe: '', layout: '', bgTone: '', fontStyle: '', budget: '', fontSize: 'Balanced',
+    primaryColor: '#1A7A8A', accentColor: '#FFD700',
+  };
 
-  function popBalloon(el, e) {
-    const x = e.clientX, y = e.clientY;
-    // burst emoji
-    const burst = document.createElement('div');
-    burst.className = 'pop-burst';
-    burst.textContent = '💥';
-    burst.style.left = (x - 20) + 'px';
-    burst.style.top  = (y - 20) + 'px';
-    document.body.appendChild(burst);
-    setTimeout(() => burst.remove(), 750);
-
-    // confetti
-    for (let i = 0; i < 18; i++) {
-      const c = document.createElement('div');
-      c.className = 'confetti-piece';
-      c.style.left = (x + (Math.random()-0.5)*40) + 'px';
-      c.style.top  = y + 'px';
-      c.style.background = CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)];
-      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      c.style.transform = `rotate(${Math.random()*360}deg)`;
-      c.style.animationDuration = (0.8 + Math.random()*0.6) + 's';
-      c.style.animationDelay = (Math.random()*0.15) + 's';
-      const tx = (Math.random()-0.5)*120;
-      c.style.setProperty('--tx', tx + 'px');
-      c.style.animation = `confettiFall ${0.9+Math.random()*0.5}s ease-out ${Math.random()*0.1}s forwards`;
-      c.style.marginLeft = ((Math.random()-0.5)*80) + 'px';
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 1400);
+  // ── PROGRESS ──
+  function renderProgress() {
+    const wrap = document.getElementById('progressSteps');
+    wrap.innerHTML = '';
+    for (let i = 1; i <= state.totalSteps; i++) {
+      const d = document.createElement('div');
+      d.className = 'progress-step' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
+      wrap.appendChild(d);
     }
-
-    // hide & respawn balloon
-    el.style.opacity = '0';
-    el.style.pointerEvents = 'none';
-    setTimeout(() => {
-      el.style.opacity = '1';
-      el.style.pointerEvents = 'auto';
-    }, 2200);
+    document.getElementById('stepCounter').textContent = state.step;
   }
 
-  // ── FORM SUBMIT ──
-  function handleSubmit(e) {
-    e.preventDefault();
-    const btn = e.target;
-    btn.textContent = '🎉 Sent! We\'ll be in touch soon!';
-    btn.style.background = 'linear-gradient(135deg, #00D4B4, #8B2FC9)';
-    btn.disabled = true;
-    // shoot confetti from button
-    const rect = btn.getBoundingClientRect();
-    for (let i = 0; i < 30; i++) {
-      const c = document.createElement('div');
-      c.className = 'confetti-piece';
-      c.style.left = (rect.left + Math.random()*rect.width) + 'px';
-      c.style.top  = rect.top + 'px';
-      c.style.background = CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)];
-      c.style.width = c.style.height = (6 + Math.random()*8) + 'px';
-      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      c.style.animationDuration = (0.9 + Math.random()*0.8) + 's';
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 1800);
-    }
+  // ── NAVIGATION ──
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const target = document.querySelector(`.step[data-step="${n}"]`);
+    if (target) { target.classList.add('active'); }
+    if (n === 8) buildSummary();
+    renderProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ── CLICK ANYWHERE to pop a random mini confetti burst ──
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('pop-balloon') || e.target.classList.contains('form-submit')) return;
-    if (Math.random() > 0.4) return; // only fires ~60% of clicks
-    for (let i = 0; i < 6; i++) {
-      const c = document.createElement('div');
-      c.className = 'confetti-piece';
-      c.style.left = (e.clientX + (Math.random()-0.5)*30) + 'px';
-      c.style.top  = e.clientY + 'px';
-      c.style.background = CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)];
-      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      c.style.width = c.style.height = (5 + Math.random()*5) + 'px';
-      c.style.animationDuration = (0.6 + Math.random()*0.5) + 's';
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 1200);
-    }
-  });
+  function nextStep() {
+    if (state.step < state.totalSteps) { state.step++; showStep(state.step); }
+  }
+  function prevStep() {
+    if (state.step > 1) { state.step--; showStep(state.step); }
+  }
+
+  // ── SINGLE-SELECT CHOICES ──
+  function selectChoice(el, key) {
+    el.closest('.choice-grid, .color-section').querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state[key] = el.querySelector('.choice-label')?.textContent || el.querySelector('[style*="font-family"]')?.textContent || '';
+  }
+
+  // ── TOGGLE CHIPS (multi-select) ──
+  function toggleChip(el) { el.classList.toggle('on'); }
+
+  // ── COLOR PRESETS ──
+  function pickPreset(el, which, hex) {
+    el.closest('.color-presets').querySelectorAll('.color-preset').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById(which + 'Hex').textContent = hex.toUpperCase();
+    document.getElementById(which + 'Picker').value = hex;
+    state[which + 'Color'] = hex;
+  }
+
+  function customColor(which, hex) {
+    document.getElementById(which + 'Hex').textContent = hex.toUpperCase();
+    state[which + 'Color'] = hex;
+    document.querySelectorAll(`#${which}Presets .color-preset`).forEach(p => p.classList.remove('selected'));
+  }
+
+  // ── RANGE SLIDER ──
+  function updateRange(el, valId, stateKey, labels) {
+    const v = parseInt(el.value) - 1;
+    const label = labels[v];
+    document.getElementById(valId).textContent = label;
+    state[stateKey] = label;
+    const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+    el.style.setProperty('--val', pct + '%');
+  }
+
+  // ── SUMMARY ──
+  function getChips(groupId) {
+    const chips = document.querySelectorAll(`#${groupId} .chip.on`);
+    return [...chips].map(c => c.textContent.trim()).join(', ') || 'None selected';
+  }
+
+  function buildSummary() {
+    const items = [
+      { key: 'Business',    val: (document.getElementById('bizName')?.value || '—') + ', ' + (document.getElementById('bizType')?.value || '—') },
+      { key: 'Location',    val: document.getElementById('bizLocation')?.value || '—' },
+      { key: 'Vibe',        val: state.vibe || '—' },
+      { key: 'Layout',      val: state.layout || '—' },
+      { key: 'Background',  val: state.bgTone || '—' },
+      { key: 'Primary Color', val: `<span class="summary-color-dot" style="background:${state.primaryColor}"></span>${state.primaryColor}` },
+      { key: 'Accent Color',  val: `<span class="summary-color-dot" style="background:${state.accentColor}"></span>${state.accentColor}` },
+      { key: 'Typography',  val: state.fontStyle || '—' },
+      { key: 'Font Size',   val: state.fontSize || 'Balanced' },
+      { key: 'Budget',      val: state.budget || '—' },
+      { key: 'Pages',       val: getChips('pagesGroup') },
+      { key: 'Features',    val: getChips('featuresGroup') },
+    ];
+    const grid = document.getElementById('summaryGrid');
+    grid.innerHTML = items.map(i => `
+      <div class="summary-item">
+        <div class="summary-key">${i.key}</div>
+        <div class="summary-val">${i.val}</div>
+      </div>`).join('');
+  }
+
+  // ── SUBMIT ──
+  function submitBrief() {
+    const name     = document.getElementById('clientName')?.value || '';
+    const biz      = document.getElementById('bizName')?.value || '';
+    const bizType  = document.getElementById('bizType')?.value || '';
+    const location = document.getElementById('bizLocation')?.value || '';
+    const existing = document.getElementById('existingSite')?.value || '';
+    const inspo    = document.getElementById('inspo')?.value || '';
+    const contact  = document.getElementById('contactInfo')?.value || '';
+    const notes    = document.getElementById('extraNotes')?.value || '';
+
+    const msg =
+`🎨 NEW WEBSITE BRIEF
+
+👤 Client: ${name}
+🏢 Business: ${biz} (${bizType})
+📍 Location: ${location}
+🌐 Existing Site: ${existing || 'None'}
+
+🎨 DESIGN PREFERENCES
+Vibe: ${state.vibe || '—'}
+Layout: ${state.layout || '—'}
+Background: ${state.bgTone || '—'}
+Primary Color: ${state.primaryColor}
+Accent Color: ${state.accentColor}
+Typography: ${state.fontStyle || '—'}
+Font Size: ${state.fontSize}
+
+📄 PAGES: ${getChips('pagesGroup')}
+⚙️ FEATURES: ${getChips('featuresGroup')}
+
+💰 Budget: ${state.budget || '—'}
+⏱ Timeline: ${getChips('timelineGroup')}
+📬 Contact Pref: ${getChips('contactGroup')}
+
+💡 Inspiration: ${inspo || '—'}
+📞 Their Contact: ${contact}
+📝 Notes: ${notes || '—'}`;
+
+    const waUrl = `https://wa.me/8801779264624?text=${encodeURIComponent(msg)}`;
+    window.open(waUrl, '_blank');
+
+    // Also open email as fallback
+    const mailUrl = `mailto:thingstoknow365@gmail.com?subject=Website%20Brief%20-%20${encodeURIComponent(biz)}&body=${encodeURIComponent(msg)}`;
+
+    // Show done screen
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('doneScreen').classList.add('show');
+    renderProgress();
+  }
+
+  // init
+  renderProgress();
 </script>
 </body>
 </html>
